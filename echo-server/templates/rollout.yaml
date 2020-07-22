@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: echo
-          image: notetake/echo-server:v1
+          image: notetake/echo-server:v2
           ports:
             - name: http
               containerPort: 8080
