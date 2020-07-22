@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: echo-server
+spec:
+  selector:
+    matchLabels:
+      app: echo-server
+  template:
+    metadata:
+      labels:
+        app: echo-server
+    spec:
+      containers:
+        - name: echo
+          image: notetake/echo-server:v1
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+  strategy:
+    canary:
+      steps:
+        - setWeight: 10
+        - pause: {}
+        - setWeight: 50
+        - pause: {}
+      stableService: echo-server-stable
+      canaryService: echo-server-canary
+      trafficRouting:
+        istio:
+          virtualService:
+            name: echo-server
+            routes:
+              - master
